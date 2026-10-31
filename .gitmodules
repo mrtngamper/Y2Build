@@ -1,0 +1,12 @@
+[submodule "Y2Linux"]
+	path = Y2Linux
+	url = git@github.com:mrtngamper/Y2Linux.git
+	branch = main
+[submodule "Y2Reborn"]
+	path = Y2Reborn
+	url = git@github.com:mrtngamper/Y2Reborn.git
+	branch = main
+[submodule "Y2Flash"]
+	path = Y2Flash
+	url = https://github.com/mrtngamper/Y2Flash
+	branch = master
