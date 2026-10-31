@@ -65,7 +65,7 @@ check-reborn:
 
 # run the Y2Linux platform gate (includes Reborn's contract test)
 gate:
-    just _in Y2Linux sh tools/development/platform-gate.sh
+    just _in Y2Linux env LD_LIBRARY_PATH=/opt/zlib-ng/lib sh tools/development/platform-gate.sh
 
 # build the system image from the committed code (--public: public variant)
 image *args:
