@@ -77,7 +77,8 @@ struct Run {
     expected: Option<Duration>,
 }
 
-/// Build: snapshot the working trees, find the steps whose key changed and run them.
+/// Build: refresh the Alpine lock if the mirror dropped a locked package, snapshot the working trees,
+/// find the steps whose key changed and run them.
 ///
 /// # Arguments
 ///
@@ -91,6 +92,7 @@ pub fn build(options: &Options) -> Result<()> {
     fs::create_dir_all(STATE)?;
     let _lock = lock()?;
     let sh = Shell::new()?;
+    crate::alpine::refresh_lock(&sh)?;
     let commits = snapshots(&sh)?;
     crate::trust::ensure_key(&sh)?;
     let pinned = sha256(fs::read(Path::new("/y2/Y2Linux").join(UPSTREAM.0))?);

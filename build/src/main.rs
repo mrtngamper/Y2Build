@@ -6,6 +6,7 @@
 //! * `y2b step NAME`, how the runner starts a step
 //! * `y2b-post-build TARGET`, how Buildroot runs y2b as a post-build script
 
+mod alpine;
 mod buildroot;
 mod check;
 mod progress;
