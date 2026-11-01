@@ -1,0 +1,16 @@
+[package]
+name = "y2b"
+version = "0.1.0"
+edition = "2024"
+description = "Builds Y2Linux and Y2Reborn quickly, and pushes the result to a player"
+license = "GPL-2.0-only"
+publish = false
+
+[dependencies]
+anyhow = "1"
+serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.10"
+xshell = "0.2"
+
+[profile.release]
+debug = false

@@ -20,8 +20,9 @@ Check out the original work!
 - Docker (usable without sudo)
 - git
 
-For `just package` you need the unpacked Innioasis Y2 stock firmware v3.2.0 (`y2_v3.2.0_FM-20260813`)
-and an SSH public key at `~/.ssh/y2linux_ed25519.pub` (or set `Y2_PUBLIC_KEY`)
+For `just build` you need the unpacked Innioasis Y2 stock firmware v3.2.0 in `y2_v3.2.0_FM-20260813`
+next to the justfile (or set `Y2_STOCK` to its folder) and an SSH public key at
+`~/.ssh/y2linux_ed25519.pub` (or set `Y2_PUBLIC_KEY`).
 
 For `just flash` the user must be in the `dialout` group.
 
@@ -32,6 +33,7 @@ git clone --recurse-submodules <this repo> Y2Build
 cd Y2Build
 just setup
 just check
+just build
 ```
 
 The first run builds the container, which takes a few minutes.
@@ -40,18 +42,23 @@ The first run builds the container, which takes a few minutes.
 
 | Command | What it does |
 | --- | --- |
-| `just check` | `cargo fmt --check`, clippy and `cargo test` in Reborn, then the Y2Linux platform gate |
-| `just fmt` | `cargo fmt --all` in Reborn |
-| `just image [--public]` | Build the system image into `Y2Linux/out/y2-build` |
-| `just resume [stage]` | Rebuild from `kernel`, `buildroot` (default) or `artifacts` |
-| `just package <stock folder> [--public]` | Make the first-install package in `Y2Linux/out/y2-first-install` |
+| `just setup` | Check out the submodules on their branches and add the upstream remotes |
+| `just check` | Run Reborn's `cargo fmt --check`, clippy and tests, then the Y2Linux platform gate |
+| `just build` | Build the first-install package into `.build/out/y2-first-install`, from the working trees as they are (uncommitted changes included). Only what changed is built again |
+| `just build --public` | The same without aptX and without your SSH key |
+| `just build --fast` | The same with Reborn and the platform built without LTO and without the release checks: quicker, for trying out, not for release |
+| `just build boot` | Build only `BOOTIMG` and `RECOVERY` |
+| `just build --explain` | Show what would be built and why, without building |
+| `just build --clean` | Build everything again (downloads and compiler caches are kept) |
+| `just push` | Build Reborn quickly (no LTO), copy it to the player over SSH and restart it |
+| `just push reborn --release` | The same with Reborn as the image builds it |
+| `just push platform` | Copy the platform (every `y2-platform` command and daemon) to the player and restart it |
+| `just push system` | Install the whole build (kernel, root filesystem, recovery) through the player's own updater, with its backup and automatic way back, then wait for the player to restart |
+| `just flash` | Flash BOOTIMG and ANDROID, keeping the player's data |
 | `just flash erase` | First install: flash BOOTIMG, ANDROID and USRDATA (**erases** the player's data) |
-| `just flash` | Update: flash BOOTIMG and ANDROID, keep the player's data |
-| `just shell` | Open a shell in the container |
-| `just status` | Show each submodule's branch and changes |
+| `just shell` | Open a shell in the build container |
 | `just upstream` | Merge SchulzCode's `main` into both forks |
-| `just pin` | Stage the submodules' current commits in Y2Build |
 
-The image is built from committed code only: commit in the fork, then `just resume`.
-
-Add `--dry-run` to `just flash` to see what would be written.
+Add `--dry-run` to `just flash` to see what would be written. `just push` uses `Y2_PLAYER`
+(default `root@10.42.0.1`) and `Y2_SSH_KEY` (default `~/.ssh/y2linux_ed25519`). Build logs are in
+`.build/out/logs/`.

@@ -77,6 +77,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         dbus-daemon \
         # Y2Flash
         libudev-dev \
+        # Rust compile cache (every cargo build in the container: just _in, and the build units)
+        sccache \
+        # JSON in the build units (versions.json, the keys)
+        jq \
+        # Ed25519 for the update packages of `just push system` (Y2Linux tools/update/package.py)
+        libsodium23 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=ffmpeg /opt/ffmpeg /opt/ffmpeg
